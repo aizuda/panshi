@@ -1,8 +1,0 @@
-rootProject.name = 'panshi'
-include 'aizuda-boot'
-include 'aizuda-framework'
-include 'aizuda-framework:aizuda-toolkit'
-include 'aizuda-framework:aizuda-bom'
-include 'aizuda-framework:aizuda-oss-starter'
-include 'aizuda-framework:aizuda-service-parent'
-include 'aizuda-framework:aizuda-generator'
