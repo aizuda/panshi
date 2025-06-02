@@ -1,19 +1,29 @@
-plugins {
-    id 'java'
+buildscript {
+    repositories {
+        maven { url "https://plugins.gradle.org/m2/" }
+        maven { url "https://repo.spring.io/plugins-release" }
+    }
+    dependencies {
+        classpath "io.spring.gradle:dependency-management-plugin:1.1.7"
+    }
 }
 
-group = 'test'
-version = '1.0-SNAPSHOT'
+description "爱组搭 BOM"
 
-repositories {
-    mavenCentral()
-}
+apply plugin: "io.spring.dependency-management"
 
-dependencies {
-    testImplementation platform('org.junit:junit-bom:5.10.0')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
-}
+dependencyManagement {
+    dependencies {
+        // 爱组搭，低代码组件化开发平台
+        dependency("com.aizuda:aizuda-cache:${APP_VERSION}")
+        dependency("com.aizuda:aizuda-core:${APP_VERSION}")
+        dependency("com.aizuda:aizuda-limiter:${APP_VERSION}")
+        dependency("com.aizuda:aizuda-monitor:${APP_VERSION}")
+        dependency("com.aizuda:aizuda-oss:${APP_VERSION}")
+        dependency("com.aizuda:aizuda-robot:${APP_VERSION}")
+        dependency("com.aizuda:aizuda-security:${APP_VERSION}")
+        dependency("com.aizuda:aizuda-service-parent:${APP_VERSION}")
+        dependency("com.aizuda:aizuda-toolkit:${APP_VERSION}")
 
-test {
-    useJUnitPlatform()
+    }
 }

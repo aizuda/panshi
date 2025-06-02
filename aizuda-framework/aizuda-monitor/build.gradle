@@ -1,0 +1,7 @@
+description "爱组搭服务器监控模块"
+
+dependencies {
+    api("com.github.oshi:oshi-core")
+    compileOnly("org.springframework.boot:spring-boot-starter-web")
+
+}

@@ -1,0 +1,9 @@
+description "爱组搭限流模块"
+
+dependencies {
+    api project(":aizuda-toolkit")
+    api("org.springframework.boot:spring-boot-starter-data-redis")
+    api("org.apache.commons:commons-pool2")
+
+    compileOnly("org.springframework.boot:spring-boot-starter-web")
+}

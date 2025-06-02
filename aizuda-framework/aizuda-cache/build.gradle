@@ -1,0 +1,10 @@
+description "爱组搭缓存模块"
+
+dependencies {
+    api project(":aizuda-toolkit")
+
+    compileOnly("com.github.ben-manes.caffeine:caffeine")
+    compileOnly("org.springframework.boot:spring-boot-starter-data-redis")
+
+    compileOnly("org.springframework.boot:spring-boot-starter-web")
+}

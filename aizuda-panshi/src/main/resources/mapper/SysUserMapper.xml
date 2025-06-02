@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aizuda.boot.modules.system.mapper.SysUserMapper">
+
+    <select id="selectPageByVO" resultType="com.aizuda.boot.modules.system.entity.SysUser">
+        SELECT u.* FROM sys_user u
+        <if test="vo != null">
+            <if test="vo.roleId != null">
+                JOIN sys_user_role r ON u.id = r.user_id AND r.role_id=#{vo.roleId}
+            </if>
+            <if test="vo.departmentId != null">
+                JOIN (WITH RECURSIVE r AS (SELECT id FROM sys_department WHERE id=#{vo.departmentId} UNION ALL SELECT c.id FROM sys_department c JOIN r ON c.pid=r.id AND c.deleted=0
+                    ) SELECT DISTINCT d.user_id FROM sys_user_department d JOIN r ON d.department_id=r.id) dr ON u.id = dr.user_id
+            </if>
+        </if>
+        WHERE u.deleted = 0
+        <if test="vo != null">
+            <if test="vo.username != null and vo.username != ''">
+                AND u.username LIKE CONCAT(CONCAT('%',#{vo.username}),'%')
+            </if>
+            <if test="vo.realName != null and vo.realName != ''">
+                AND  u.real_name LIKE CONCAT(CONCAT('%',#{vo.realName}),'%')
+            </if>
+            <if test="vo.nickName != null and vo.nickName != ''">
+                AND u.nick_name LIKE CONCAT(CONCAT('%',#{vo.nickName}),'%')
+            </if>
+            <if test="vo.jobNum != null and vo.jobNum != ''">
+                AND u.job_num LIKE CONCAT(CONCAT('%',#{vo.jobNum}),'%')
+            </if>
+            <if test="vo.phone != null and vo.phone != ''">
+                AND u.phone LIKE CONCAT(CONCAT('%',#{vo.phone}),'%')
+            </if>
+            <if test="vo.email != null and vo.email != ''">
+                AND u.email LIKE CONCAT(CONCAT('%',#{vo.email}),'%')
+            </if>
+            <if test="vo.status != null">
+                AND u.status = #{vo.status}
+            </if>
+        </if>
+        ORDER BY u.update_time DESC
+    </select>
+</mapper>

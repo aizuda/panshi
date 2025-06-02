@@ -1,0 +1,12 @@
+description "爱组搭存储模块"
+
+dependencies {
+    api project(":aizuda-toolkit")
+    compileOnly("org.springframework.boot:spring-boot-starter-web")
+    compileOnly("com.qcloud:cos_api:5.6.247")
+    compileOnly("com.amazonaws:aws-java-sdk-s3:1.12.783")
+    compileOnly("com.aliyun.oss:aliyun-sdk-oss:3.18.2")
+    compileOnly("io.minio:minio:8.5.17")
+    compileOnly("org.apache.tika:tika-core")
+
+}

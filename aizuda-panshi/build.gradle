@@ -1,19 +1,152 @@
-plugins {
-    id 'java'
+ext {
+    // 仓库配置
+    repositories {
+        mavenLocal()
+        maven {
+            allowInsecureProtocol = true
+            url 'https://git.aizuda.com/api/packages/aizuda/maven'
+            credentials(HttpHeaderCredentials) {
+                name = "Authorization"
+                value = "token 7d725429ef7ac5c9fa9a6779f70032d6e42d7f34"
+            }
+            authentication {
+                header(HttpHeaderAuthentication)
+            }
+        }
+        maven { url 'https://maven.aliyun.com/repository/central' }
+        maven { url 'https://maven.aliyun.com/repository/spring' }
+        mavenCentral()
+    }
 }
 
-group = 'test'
-version = '1.0-SNAPSHOT'
+// 编译脚本
+buildscript {
+    ext {
+        springBootVersion = "3.5.0"
+        springdocVersion = "2.8.8"
+        mybatisPlusVersion = "3.5.12"
+        aizudaVersion = "1.1.0"
+    }
 
-repositories {
-    mavenCentral()
+    // 仓库配置
+    repositories {
+        mavenLocal()
+        maven { url 'https://maven.aliyun.com/repository/central' }
+        maven { url 'https://maven.aliyun.com/repository/spring' }
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
 }
 
-dependencies {
-    testImplementation platform('org.junit:junit-bom:5.10.0')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
+apply plugin: 'java-library'
+apply plugin: "io.spring.dependency-management"
+apply plugin: 'org.springframework.boot'
+
+
+group = "com.aizuda"
+version = "1.0.0"
+description "爱组搭 PanShi 磐石"
+
+// 编译环境 JDK-17+
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
+
+configurations {
+    all*.exclude module: "spring-boot-starter-logging"
+    all*.exclude module: "spring-boot-starter-tomcat"
 }
 
 test {
     useJUnitPlatform()
 }
+
+// 依赖管理
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.boot:spring-boot-dependencies:${springBootVersion}"
+        mavenBom "com.baomidou:mybatis-plus-bom:${mybatisPlusVersion}"
+        mavenBom "com.aizuda:aizuda-bom:${aizudaVersion}"
+    }
+}
+
+dependencies {
+    implementation("com.aizuda:aizuda-service-parent") {
+        // 纯 mysql 运行环境打开该配置排除 PG 依赖
+        // exclude group:"org.postgresql", module:"postgresql"
+    }
+    // mysql 驱动，纯 PG 环境可删除该依赖
+    implementation("mysql:mysql-connector-java:8.0.33")
+
+    // ORM
+    implementation("com.baomidou:mybatis-plus-spring-boot3-starter")
+    implementation("com.baomidou:mybatis-plus-jsqlparser")
+    implementation("com.baomidou:mybatis-plus-generator")
+
+    // SSO 单点登录
+    implementation("com.baomidou:kisso:3.9.3")
+
+    // 本地缓存
+    implementation("com.github.ben-manes.caffeine:caffeine")
+
+    // 日志
+    api("org.springframework.boot:spring-boot-starter-log4j2")
+    api("com.lmax:disruptor")
+
+    // 文档 https://springdoc.org
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:${springdocVersion}")
+
+    // 监控
+    implementation("com.aizuda:aizuda-monitor")
+
+    // 工具类
+    implementation("commons-collections:commons-collections:3.2.2")
+
+    // SpringBootAdmin 监控管理客户端，未使用可以删除
+    // implementation("de.codecentric:spring-boot-admin-starter-client:3.0.2")
+
+    // 电子邮件
+    implementation("org.springframework.boot:spring-boot-starter-mail")
+
+    // oss 文件存储
+    implementation("com.aizuda:aizuda-oss")
+    // implementation("io.minio:minio:8.5.17")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("org.apache.tika:tika-core:3.2.0")
+
+    compileOnly("p6spy:p6spy:3.9.1")
+    testImplementation("p6spy:p6spy:3.9.1")
+    compileOnly("org.projectlombok:lombok")
+    annotationProcessor("org.projectlombok:lombok")
+    testAnnotationProcessor("org.projectlombok:lombok")
+    testCompileOnly("org.projectlombok:lombok")
+
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+}
+
+// 执行 jar 命令编译
+jar {
+    // 自定义 jar 任务以设置 MANIFEST.MF 配置分离 lib 加载
+    manifest {
+        attributes(
+                'Main-Class': 'com.aizuda.boot.BootApplication',
+                'Class-Path': configurations.runtimeClasspath.collect(({ "lib/${it.name}" } as Closure<Object>)).join(' ')
+        )
+    }
+}
+
+// 复制依赖到 lib 目录的任务
+tasks.register('copyLibs', Copy) {
+    delete "$buildDir/libs/lib" // 删除历史包
+    from configurations.runtimeClasspath
+    into "$buildDir/libs/lib" // 输出到 build/libs/lib
+}
+
+// 仅在 jar 任务执行时，copyLibs 任务将被执行
+jar.finalizedBy(copyLibs)

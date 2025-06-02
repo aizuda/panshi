@@ -1,0 +1,40 @@
+# 开发环境
+spring:
+  datasource:
+    username: postgres
+    password: 123456
+    driver-class-name: com.p6spy.engine.spy.P6SpyDriver
+    url: jdbc:p6spy:postgresql://127.0.0.1:5432/aizuda-panshi
+  # spring boot admin client config
+  boot:
+    admin:
+      client:
+        enabled: true
+        url: http://localhost:8989
+        # 监控服务端用户名密码
+        username: azdAdmin
+        password: azLd679bMw1688
+        connect-timeout: 12000
+        read-timeout: 12000
+        instance:
+          service-host-type: ip
+          metadata:
+            # 当前服务的访问用户名密码
+            user.name: aizudaBoot
+            user.password: azd1b3Wkns168
+
+# 健康检查配置
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+aizuda:
+  oss:
+    local-storage:
+      platform: local
+      localFilePath: C://aizuda

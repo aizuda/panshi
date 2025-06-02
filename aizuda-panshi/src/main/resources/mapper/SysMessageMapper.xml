@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aizuda.boot.modules.system.mapper.SysMessageMapper">
+
+    <select id="selectPageVOByUserId" resultType="com.aizuda.boot.modules.system.entity.vo.SysMessageVO">
+        SELECT s.*,r.viewed,r.send_status,r.send_failure,r.send_time FROM sys_message s
+        JOIN sys_message_receiver r ON r.message_id = s.id AND r.user_id = #{userId}
+        <where>
+            <if test="m.title != null and m.title != ''">
+                AND s.title LIKE CONCAT('%',#{m.title},'%')
+            </if>
+            <if test="m.createBy != null and m.createBy != ''">
+                AND s.create_by LIKE CONCAT('%',#{m.createBy},'%')
+            </if>
+            <if test="m.category != null">
+                AND s.category = #{m.category}
+            </if>
+            <if test="m.viewed != null">
+                AND r.viewed = #{m.viewed}
+            </if>
+        </where>
+        ORDER BY s.create_time DESC
+    </select>
+
+    <select id="selectPageMyNotViewed" resultType="com.aizuda.boot.modules.system.entity.vo.MyMessageVO">
+        SELECT s.id,s.title,s.content,s.create_by,s.create_time,s.business_id,s.business_type
+        FROM sys_message s JOIN sys_message_receiver r ON r.message_id = s.id
+        WHERE r.user_id = #{userId} AND s.category = #{category} AND r.viewed = 0
+        ORDER BY s.create_time DESC
+    </select>
+</mapper>

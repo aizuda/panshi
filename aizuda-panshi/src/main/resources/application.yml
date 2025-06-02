@@ -1,0 +1,43 @@
+server:
+  port: 8088
+spring:
+  application:
+    name: aizuda-panshi
+  profiles:
+    active: postgresql
+  messages:
+    basename: i18n.messages
+  jackson:
+    time-zone: GMT+8
+
+# flowlong config
+flowlong:
+  eventing:
+    instance: true
+
+# openapi config
+springdoc:
+  local-mode: true
+  api-docs:
+    enabled: true
+  swagger-ui:
+    filter: true
+    defaultModelsExpandDepth: -1
+    docExpansion: none
+
+# orm config
+mybatis-plus:
+  configuration:
+    cache-enabled: false
+    map-underscore-to-camel-case: true
+  mapper-locations: classpath:mapper/**/*Mapper.xml
+  global-config:
+    banner: false
+    db-config:
+      table-underline: true
+
+# 日志
+logging:
+  config: classpath:log4j2.xml
+  pattern:
+    console: "%-5level - %msg%n"

@@ -1,0 +1,7 @@
+description "爱组搭机器人模块"
+
+dependencies {
+    api project(":aizuda-toolkit")
+    compileOnly("org.springframework.boot:spring-boot-starter-web")
+
+}

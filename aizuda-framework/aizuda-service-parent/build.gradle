@@ -1,19 +1,42 @@
-plugins {
-    id 'java'
-}
+description "爱组搭低代码组件化开发平台服务包"
 
-group = 'test'
-version = '1.0-SNAPSHOT'
-
-repositories {
-    mavenCentral()
-}
-
+/*
+ --------------------------------------------------------
+            非所有服务都必须依赖的包请勿添加
+ --------------------------------------------------------
+ */
 dependencies {
-    testImplementation platform('org.junit:junit-bom:5.10.0')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
-}
+    api project(":aizuda-toolkit")
+    api project(":aizuda-core")
+    api("org.springframework.boot:spring-boot-starter-web") {
+        exclude module: "spring-boot-starter-tomcat"
+    }
+    api("org.springframework.boot:spring-boot-starter-aop")
+    api("org.springframework.boot:spring-boot-starter-actuator")
+    api("org.springframework.boot:spring-boot-starter-undertow")
+    api("org.springframework.boot:spring-boot-starter-validation")
+    // 为了减少依赖 jar 体量，非公共依赖不要申明为 api 必须遵守在负责人同意允许后在对应项目中添加
 
-test {
-    useJUnitPlatform()
+    // 文档
+    api("org.springdoc:springdoc-openapi-starter-common")
+
+    // 日志
+    api('org.springframework.boot:spring-boot-starter-log4j2')
+    api("com.lmax:disruptor")
+
+    // 数据库相关
+    api("org.springframework.boot:spring-boot-starter-jdbc")
+    api("org.postgresql:postgresql")
+    api("com.baomidou:mybatis-plus-spring-boot3-starter")
+    api("com.baomidou:mybatis-plus-jsqlparser")
+
+    api("com.baomidou:kisso")
+    // 为了减少依赖 jar 体量，非公共依赖不要申明为 api 必须遵守在负责人同意允许后在对应项目中添加
+
+    compileOnly("org.aspectj:aspectjweaver")
+
+    compileOnly("org.projectlombok:lombok")
+    annotationProcessor("org.projectlombok:lombok")
+    testAnnotationProcessor("org.projectlombok:lombok")
+    testCompileOnly("org.projectlombok:lombok")
 }

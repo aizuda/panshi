@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aizuda.boot.modules.system.mapper.SysDepartmentMapper">
+
+    <select id="selectIdsRecursive" resultType="java.lang.Long">
+        WITH RECURSIVE r AS (SELECT id FROM sys_department WHERE id=#{id} UNION ALL SELECT c.id
+        FROM sys_department c JOIN r ON c.pid=r.id) SELECT id FROM r
+    </select>
+
+    <select id="selectDepartmentHeadByUserId" resultType="com.aizuda.boot.modules.system.entity.vo.DepartmentHeadVO">
+        SELECT d.head_id,d.head_name FROM sys_department d WHERE d.id IN (SELECT r.department_id
+        FROM sys_user_department r WHERE r.user_id=#{userId}) LIMIT 1
+    </select>
+</mapper>

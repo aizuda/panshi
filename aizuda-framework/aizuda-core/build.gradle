@@ -1,0 +1,19 @@
+description "爱组搭低代码组件化开发平台核心包"
+
+/*
+ --------------------------------------------------------
+            非所有服务都必须依赖的包请勿添加
+ --------------------------------------------------------
+ */
+dependencies {
+    // 传递依赖
+    api("org.apache.commons:commons-lang3")
+    api("org.jodd:jodd-bean")
+    // 为了减少依赖 jar 体量，非公共依赖不要申明为 api 必须遵守在负责人同意允许后在对应项目中添加
+
+    // 不是必须要所有项目依赖的包，请设置为编译依赖
+    compileOnly("com.baomidou:mybatis-plus-extension")
+    compileOnly("org.springframework.boot:spring-boot-starter-web")
+    compileOnly("org.springframework.boot:spring-boot-starter-validation")
+
+}

@@ -1,1 +1,12 @@
 rootProject.name = 'aizuda-framework'
+
+include 'aizuda-bom'
+include 'aizuda-cache'
+include 'aizuda-core'
+include 'aizuda-limiter'
+include 'aizuda-monitor'
+include 'aizuda-oss'
+include 'aizuda-robot'
+include 'aizuda-security'
+include 'aizuda-service-parent'
+include 'aizuda-toolkit'
