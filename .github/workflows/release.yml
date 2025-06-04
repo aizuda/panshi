@@ -3,6 +3,8 @@ on:
   push:
     tags:
       - v*
+env:
+  PROJECT_DIR: panshi/aizuda-framework 
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -14,19 +16,19 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Change directory to aizuda-framework
-        run: cd aizuda-framework
-
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
 
       - name: Grant execute permission for gradlew
+        working-directory: ${{ env.PROJECT_DIR }}
         run: chmod +x gradlew
 
       - name: Build without tests
+        working-directory: ${{ env.PROJECT_DIR }}
         run: ./gradlew build -x test
 
       - name: Publish package to maven central
+        working-directory: ${{ env.PROJECT_DIR }}
         env:
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
