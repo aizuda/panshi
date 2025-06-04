@@ -1,10 +1,9 @@
 <script setup lang="tsx">
 import { computed, reactive, ref, watch } from 'vue';
 import { enableStatusOptions } from '@/constants/business';
-import { fetchCreateDept, fetchUpdateDept } from '@/service/api';
+import { fetchCreateDept, fetchGetUserList20, fetchUpdateDept } from '@/service/api';
 import { useFormRules, useNaiveForm } from '@/hooks/common/form';
 import { $t } from '@/locales';
-import WorkflowSelect from '@/components/workflow/select/index.vue';
 
 defineOptions({
   name: 'DeptOperateDrawer'
@@ -31,8 +30,6 @@ const visible = defineModel<boolean>('visible', {
   default: false
 });
 
-const selectVisible = ref<boolean>(false);
-const selectData = ref<Workflow.NodeAssignee[]>([]);
 const { formRef, validate, restoreValidation } = useNaiveForm();
 const { defaultRequiredRule } = useFormRules();
 
@@ -86,12 +83,18 @@ function handleInitModel() {
 
   if (props.operateType === 'edit' && props.rowData) {
     Object.assign(model, props.rowData);
-    if (model.headId) {
-      selectData.value = [{ id: model.headId!, name: model.headName! }];
-    } else {
-      selectData.value = [];
-    }
   }
+}
+
+const userOptions = ref<{ label: string; value: string }[]>([]);
+
+async function getUserOptions() {
+  const { data, error } = await fetchGetUserList20();
+  if (error) return;
+  userOptions.value = data?.map(item => ({
+    label: item.realName || item.nickName || item.username,
+    value: item.id
+  }));
 }
 
 function closeDrawer() {
@@ -147,23 +150,9 @@ watch(visible, () => {
   if (visible.value) {
     handleInitModel();
     restoreValidation();
+    getUserOptions();
   }
 });
-
-function selectHandle() {
-  selectVisible.value = true;
-}
-
-function handleSaveSelect(data: Workflow.NodeAssignee[]) {
-  if (data.length > 0) {
-    model.headId = data[0].id;
-    model.headName = data[0].name;
-  } else {
-    model.headId = undefined;
-    model.headName = undefined;
-  }
-  selectData.value = data;
-}
 </script>
 
 <template>
@@ -188,15 +177,7 @@ function handleSaveSelect(data: Workflow.NodeAssignee[]) {
             <NInput v-model:value="model.code" placeholder="请输入部门编码" />
           </NFormItemGi>
           <NFormItemGi :span="24" label="部门主管" path="headId">
-            <div class="flex-center gap-8px">
-              <NButton type="primary" size="small" round @click="() => selectHandle()">
-                <template #icon>
-                  <icon-ep-plus />
-                </template>
-                选择主管
-              </NButton>
-              <UserAvatar v-if="selectData.length > 0" :name="selectData[0].name" />
-            </div>
+            <NSelect v-model:value="model.headId" :options="userOptions" placeholder="请选择部门主管" />
           </NFormItemGi>
           <NFormItemGi :span="24" label="状态" path="status">
             <NRadioGroup v-model:value="model.status">
@@ -213,13 +194,6 @@ function handleSaveSelect(data: Workflow.NodeAssignee[]) {
           </NFormItemGi>
         </NGrid>
       </NForm>
-      <WorkflowSelect
-        v-model:visible="selectVisible"
-        v-model:value="selectData"
-        :type="1"
-        :max="1"
-        @save="handleSaveSelect"
-      />
       <template #footer>
         <NSpace :size="16">
           <NButton @click="closeDrawer">{{ $t('common.cancel') }}</NButton>
