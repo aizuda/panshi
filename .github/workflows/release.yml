@@ -4,7 +4,7 @@ on:
     tags:
       - v*
 env:
-  PROJECT_DIR: panshi/aizuda-framework 
+  PROJECT_DIR: aizuda-framework 
 jobs:
   build:
     runs-on: ubuntu-latest
