@@ -2,17 +2,6 @@ ext {
     // 仓库配置
     repositories {
         mavenLocal()
-        maven {
-            allowInsecureProtocol = true
-            url 'https://git.aizuda.com/api/packages/aizuda/maven'
-            credentials(HttpHeaderCredentials) {
-                name = "Authorization"
-                value = "token 7d725429ef7ac5c9fa9a6779f70032d6e42d7f34"
-            }
-            authentication {
-                header(HttpHeaderAuthentication)
-            }
-        }
         maven { url 'https://maven.aliyun.com/repository/central' }
         maven { url 'https://maven.aliyun.com/repository/spring' }
         mavenCentral()
