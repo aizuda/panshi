@@ -2,12 +2,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.5.0</version>
-		<relativePath/>
-	</parent>
 	<groupId>com.aizuda</groupId>
 	<artifactId>aizuda-panshi</artifactId>
 	<version>1.0.0</version>
@@ -15,8 +9,11 @@
 	<description>爱组搭 PanShi 磐石</description>
 
 	<properties>
+		<java.version>17</java.version>
+		<maven.compiler.parameters>true</maven.compiler.parameters>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<spring-boot.version>3.5.0</spring-boot.version>
 		<mybatis-plus.version>3.5.12</mybatis-plus.version>
 		<aizuda.version>1.1.0</aizuda.version>
 		<springdoc.version>2.8.8</springdoc.version>
@@ -24,27 +21,6 @@
 	</properties>
 
 	<repositories>
-		<repository>
-			<id>gitea</id>
-			<url>https://git.aizuda.com/api/packages/aizuda/maven</url>
-			<!-- 私服软件下载 maven 配置 settings.xml 文件中：
-			<settings>
-			  <servers>
-				<server>
-				  <id>gitea</id>
-				  <configuration>
-					<httpHeaders>
-					  <property>
-						<name>Authorization</name>
-						<value>token 7d725429ef7ac5c9fa9a6779f70032d6e42d7f34</value>
-					  </property>
-					</httpHeaders>
-				  </configuration>
-				</server>
-			  </servers>
-			</settings>
-			-->
-		</repository>
 		<repository>
 			<id>central</id>
 			<url>https://maven.aliyun.com/repository/central</url>
@@ -56,21 +32,15 @@
 			</snapshots>
 		</repository>
 	</repositories>
-
-	<distributionManagement>
-		<repository>
-			<id>gitea</id>
-			<url>http://git.aizuda.com/api/packages/aizuda/maven</url>
-		</repository>
-
-		<snapshotRepository>
-			<id>gitea</id>
-			<url>http://git.aizuda.com/api/packages/aizuda/maven</url>
-		</snapshotRepository>
-	</distributionManagement>
-
 	<dependencyManagement>
 		<dependencies>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-dependencies</artifactId>
+				<version>${spring-boot.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
 			<dependency>
 				<groupId>com.aizuda</groupId>
 				<artifactId>aizuda-bom</artifactId>
@@ -222,7 +192,6 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<version>3.3.0</version>
 			</plugin>
 		</plugins>
 	</build>
