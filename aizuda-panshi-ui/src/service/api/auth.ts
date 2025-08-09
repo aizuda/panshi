@@ -24,7 +24,7 @@ export function fetchGetUserInfo() {
  */
 export function fetchRefreshToken(refreshToken: string) {
   return request<Api.Auth.LoginToken>({
-    url: '/auth/refreshToken',
+    url: '/auth/login/refresh-token',
     method: 'post',
     data: {
       refreshToken

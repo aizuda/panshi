@@ -6,35 +6,25 @@
 package com.aizuda.boot.modules.auth.param;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
 
 /**
- * 登录参数
+ * 刷新票据登录参数
  *
  * @author 青苗
  * @since 1.0.0
  */
 @Getter
 @Setter
-@Schema(name = "LoginParam", description = "登录参数")
-public class LoginParam implements Serializable {
+@Schema(name = "RefreshTokenParam", description = "刷新票据登录参数")
+public class RefreshTokenParam implements Serializable {
 
-    @Schema(description = "AES登录票据")
-    private String token;
-
+    @NotEmpty
     @Schema(description = "刷新票据")
     private String refreshToken;
-
-    @Schema(description = "登录名称")
-    private String username;
-
-    @Schema(description = "登录密码")
-    private String password;
-
-    @Schema(description = "验证码")
-    private String code;
 
 }

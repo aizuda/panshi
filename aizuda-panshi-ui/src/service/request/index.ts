@@ -21,8 +21,8 @@ export const request = createFlatRequest<App.Service.Response, RequestInstanceSt
       const { headers } = config;
 
       // set token
-      const AccessToken = getAuthorization();
-      Object.assign(headers, { AccessToken, Environment: import.meta.env.MODE });
+      const Authorization = getAuthorization();
+      Object.assign(headers, { Authorization, Environment: import.meta.env.MODE });
 
       return config;
     },

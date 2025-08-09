@@ -31,6 +31,7 @@ import java.util.List;
 @Slf4j
 @AllArgsConstructor
 public class ServiceWebMvcConfigurer implements WebMvcConfigurer {
+    private SSOHandlerInterceptor ssoHandlerInterceptor;
     private SSOAuthorization ssoAuthorization;
     private IExcludePaths excludePaths;
 
@@ -38,17 +39,7 @@ public class ServiceWebMvcConfigurer implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         // SSO 授权拦截器
         SSOSpringInterceptor ssoInterceptor = new SSOSpringInterceptor();
-        ssoInterceptor.setHandlerInterceptor(new SSOHandlerInterceptor() {
-            @Override
-            public boolean preTokenIsNullAjax(HttpServletRequest request, HttpServletResponse response) {
-                return false;
-            }
-
-            @Override
-            public boolean preTokenIsNull(HttpServletRequest request, HttpServletResponse response) {
-                return false;
-            }
-        });
+        ssoInterceptor.setHandlerInterceptor(ssoHandlerInterceptor);
         InterceptorRegistration registration = registry.addInterceptor(ssoInterceptor);
         registration.addPathPatterns("/**");
 

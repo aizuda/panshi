@@ -79,7 +79,7 @@ dependencies {
     implementation("com.baomidou:mybatis-plus-generator")
 
     // SSO 单点登录
-    implementation("com.baomidou:kisso:3.9.3")
+    implementation("com.baomidou:kisso:3.9.5")
 
     // 本地缓存
     implementation("com.github.ben-manes.caffeine:caffeine")

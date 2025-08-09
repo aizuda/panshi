@@ -6,10 +6,12 @@
 package com.aizuda.boot.modules.auth.service.impl;
 
 import com.aizuda.boot.modules.auth.param.LoginParam;
+import com.aizuda.boot.modules.auth.param.RefreshTokenParam;
 import com.aizuda.boot.modules.auth.service.IAuthService;
 import com.aizuda.boot.modules.system.entity.SysUser;
 import com.aizuda.boot.modules.system.service.ISysUserService;
 import com.aizuda.core.api.ApiAssert;
+import com.aizuda.core.api.ApiErrorCode;
 import com.baomidou.kisso.common.encrypt.MD5Salt;
 import com.baomidou.kisso.enums.TokenOrigin;
 import com.baomidou.kisso.security.token.SSOToken;
@@ -23,6 +25,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
 /**
@@ -40,7 +44,7 @@ public class AuthServiceImpl implements IAuthService {
     public Map<String, Object> login(HttpServletRequest request, HttpServletResponse response, LoginParam loginParam) {
         ApiAssert.fail(StringUtils.isEmpty(loginParam.getUsername())
                 || StringUtils.isEmpty(loginParam.getPassword()), "用户名密码不能为空");
-        ApiAssert.fail(!Objects.equals("azd666", loginParam.getCode()), "请输入正确的验证码");
+        ApiAssert.fail(!Objects.equals("azd123", loginParam.getCode()), "请输入正确的验证码");
         List<SysUser> userList = sysUserService.list(Wrappers.<SysUser>query().eq("username", loginParam.getUsername()));
         ApiAssert.fail(null == userList || userList.size() != 1, "用户不存或异常数据");
         SysUser user = userList.get(0);
@@ -57,16 +61,27 @@ public class AuthServiceImpl implements IAuthService {
      */
     private Map<String, Object> loginInfo(HttpServletRequest request, SysUser user) {
         Map<String, Object> loginInfo = new HashMap<>(4);
-        loginInfo.put("token", new SSOToken().id(user.getId()).issuer(user.getUsername())
-                .userAgent(request).origin(TokenOrigin.HTML5).data(new HashMap<>() {{
-                    // 设置会话ID，用于区分客户端消息发送
-                    put("sid", IdWorker.get32UUID());
-                }}).getToken());
+        // 会话ID
+        String sid = IdWorker.get32UUID();
+        // 会话票据 30 分钟后失效
+        loginInfo.put("token", this.createToken(request, user, sid, 30));
+        // 刷新票据 35 分钟后失效
+        loginInfo.put("refreshToken", this.createToken(request, user, sid, 35));
         loginInfo.put("userInfo", new HashMap<String, Object>(2) {{
             put("userId", user.getId());
             put("userName", user.getNickName());
         }});
         return loginInfo;
+    }
+
+    private String createToken(HttpServletRequest request, SysUser user, String sid, long minutes) {
+        // 创建会话票据
+        return new SSOToken().time(LocalDateTime.now().plusMinutes(minutes).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                .id(user.getId()).issuer(user.getUsername())
+                .userAgent(request).origin(TokenOrigin.HTML5).data(new HashMap<>() {{
+                    // 设置会话ID，用于区分客户端消息发送
+                    put("sid", sid);
+                }}).getToken();
     }
 
     @Override
@@ -94,4 +109,12 @@ public class AuthServiceImpl implements IAuthService {
         return loginInfo(request, user);
     }
 
+    @Override
+    public Map<String, Object> refreshTokenLogin(HttpServletRequest request, RefreshTokenParam param) {
+        SSOToken ssoToken = SSOToken.parser(param.getRefreshToken(), true);
+        ApiAssert.fail(ssoToken.timeExpired(), ApiErrorCode.REFRESH_TOKEN_EXPIRED);
+        SysUser sysUser = sysUserService.getById(Long.valueOf(ssoToken.getId()));
+        ApiAssert.fail(null == sysUser, "用户不存或异常数据");
+        return this.loginInfo(request, sysUser);
+    }
 }

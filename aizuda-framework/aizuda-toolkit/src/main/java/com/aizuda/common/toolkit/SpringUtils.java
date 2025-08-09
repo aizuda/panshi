@@ -64,8 +64,7 @@ public class SpringUtils {
      * 通过class获取Bean
      * </p>
      *
-     * @param clazz
-     * @param <T>
+     * @param clazz ｛@link Class｝
      */
     public static <T> T getBean(Class<T> clazz) {
         return getApplicationContext().getBean(clazz);
@@ -79,7 +78,6 @@ public class SpringUtils {
      * 动态注入单例bean实例
      *
      * @param beanName        {@link ConfigurableApplicationContext}
-     * @param beanName        bean名称
      * @param singletonObject 单例bean实例
      * @return 注入实例
      */

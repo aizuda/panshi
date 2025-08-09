@@ -6,7 +6,7 @@ buildscript {
         mybatisPlusVersion = "3.5.12"
         springdocVersion = "2.8.8"
         jakartaServletApiVersion = "6.1.0"
-        kissoVersion = "3.9.3"
+        kissoVersion = "3.9.5"
         postgresqlVersion = "42.7.6"
     }
 

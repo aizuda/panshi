@@ -19,6 +19,14 @@ public enum ApiErrorCode implements IErrorCode {
      */
     FAILED(-1, "操作失败"),
     /**
+     * 票据过期
+     */
+    TOKEN_EXPIRED(1, "授权票据过期"),
+    /**
+     * 刷新票据过期
+     */
+    REFRESH_TOKEN_EXPIRED(2, "刷新票据过期"),
+    /**
      * 成功
      */
     SUCCESS(200, "执行成功");

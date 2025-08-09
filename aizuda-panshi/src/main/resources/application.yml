@@ -10,6 +10,11 @@ spring:
   jackson:
     time-zone: GMT+8
 
+# kisso config
+kisso:
+  config:
+    access-token-name: authorization
+
 # flowlong config
 flowlong:
   eventing:

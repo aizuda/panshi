@@ -104,7 +104,7 @@
 		<dependency>
 			<groupId>com.baomidou</groupId>
 			<artifactId>kisso</artifactId>
-			<version>3.9.3</version>
+			<version>3.9.5</version>
 		</dependency>
 
 		<!-- 本地缓存 -->

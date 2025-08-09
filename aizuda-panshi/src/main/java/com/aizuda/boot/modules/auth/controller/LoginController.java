@@ -6,12 +6,14 @@
 package com.aizuda.boot.modules.auth.controller;
 
 import com.aizuda.boot.modules.auth.param.LoginParam;
+import com.aizuda.boot.modules.auth.param.RefreshTokenParam;
 import com.aizuda.boot.modules.auth.service.IAuthService;
 import com.aizuda.core.api.ApiController;
 import com.baomidou.kisso.annotation.LoginIgnore;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -41,5 +43,12 @@ public class LoginController extends ApiController {
     @PostMapping("/token")
     public Map<String, Object> tokenLogin(@RequestBody LoginParam loginParam) {
         return authService.tokenLogin(request, response, loginParam);
+    }
+
+    @Operation(summary = "刷新票据登录")
+    @LoginIgnore
+    @PostMapping("/refresh-token")
+    public Map<String, Object> refreshToken(@Validated @RequestBody RefreshTokenParam refreshTokenParam) {
+        return authService.refreshTokenLogin(request, refreshTokenParam);
     }
 }

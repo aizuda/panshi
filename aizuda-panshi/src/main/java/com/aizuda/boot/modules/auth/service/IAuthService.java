@@ -6,6 +6,7 @@
 package com.aizuda.boot.modules.auth.service;
 
 import com.aizuda.boot.modules.auth.param.LoginParam;
+import com.aizuda.boot.modules.auth.param.RefreshTokenParam;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -38,4 +39,13 @@ public interface IAuthService {
      * @return 登录信息 MAP
      */
     Map<String, Object> tokenLogin(HttpServletRequest request, HttpServletResponse response, LoginParam loginParam);
+
+    /**
+     * 刷新票据登录
+     *
+     * @param request    请求
+     * @param param      刷新票据登录参数
+     * @return 登录信息 MAP
+     */
+    Map<String, Object> refreshTokenLogin(HttpServletRequest request, RefreshTokenParam param);
 }

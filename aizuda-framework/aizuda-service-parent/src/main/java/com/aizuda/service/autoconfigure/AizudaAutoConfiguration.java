@@ -13,6 +13,7 @@ import com.aizuda.service.web.ServiceExceptionHandler;
 import com.aizuda.service.web.ServiceWebMvcConfigurer;
 import com.baomidou.kisso.SSOAuthorization;
 import com.baomidou.kisso.web.auth.BasicAuthenticateFilter;
+import com.baomidou.kisso.web.handler.SSOHandlerInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -49,10 +50,11 @@ public class AizudaAutoConfiguration {
     @Bean
     @ConditionalOnProperty(prefix = "kisso.config", name = "enabled", havingValue = "true", matchIfMissing = true)
     @ConditionalOnMissingBean
-    public ServiceWebMvcConfigurer serviceWebMvcConfigurer(@Autowired(required = false) SSOAuthorization ssoAuthorization,
+    public ServiceWebMvcConfigurer serviceWebMvcConfigurer(@Autowired(required = false) SSOHandlerInterceptor ssoHandlerInterceptor,
+                                                           @Autowired(required = false) SSOAuthorization ssoAuthorization,
                                                            @Autowired(required = false) IExcludePaths excludePaths) {
         ApiAssert.isEmpty(ssoAuthorization, "SSOAuthorization Implementation class not found");
-        return new ServiceWebMvcConfigurer(ssoAuthorization, excludePaths);
+        return new ServiceWebMvcConfigurer(ssoHandlerInterceptor, ssoAuthorization, excludePaths);
     }
 
     /**
