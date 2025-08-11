@@ -37,6 +37,10 @@ public class ApiAssert {
         throw new ApiException(errorCode);
     }
 
+    public static void fail(long code, String message) {
+        throw new ApiException(code, message);
+    }
+
     public static void fail(boolean condition, IErrorCode errorCode) {
         if (condition) {
             fail(errorCode);

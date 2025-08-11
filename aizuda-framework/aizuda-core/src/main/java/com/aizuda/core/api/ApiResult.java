@@ -53,6 +53,11 @@ public class ApiResult<T> implements Serializable {
         this.message = errorCode.getMsg();
     }
 
+    public ApiResult(long code, String message) {
+        this.code = code;
+        this.message = message;
+    }
+
     public static <T> ApiResult<T> ok(T data) {
         ApiErrorCode aec = ApiErrorCode.SUCCESS;
         if (data instanceof Boolean && Boolean.FALSE.equals(data)) {
@@ -73,7 +78,7 @@ public class ApiResult<T> implements Serializable {
         return result(data, errorCode.getCode(), errorCode.getMsg());
     }
 
-    private static <T> ApiResult<T> result(T data, long code, String message) {
+    public static <T> ApiResult<T> result(T data, long code, String message) {
         ApiResult<T> apiResult = new ApiResult<>();
         apiResult.setCode(code);
         apiResult.setData(data);

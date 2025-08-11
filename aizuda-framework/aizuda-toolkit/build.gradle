@@ -5,6 +5,6 @@ dependencies {
     compileOnly("com.baomidou:kisso")
     compileOnly("org.bouncycastle:bcprov-jdk15on")
 
-    testImplementation("com.baomidou:kisso:3.9.5")
+    testImplementation("com.baomidou:kisso")
     testImplementation("org.bouncycastle:bcprov-jdk15on")
 }

@@ -125,12 +125,8 @@ public class ServiceExceptionHandler {
         /*
          * 业务逻辑异常
          */
-        if (e instanceof ApiException) {
-            IErrorCode errorCode = ((ApiException) e).getErrorCode();
-            if (null != errorCode) {
-                return ApiResult.failed(errorCode);
-            }
-            return ApiResult.failed(e.getMessage());
+        if (e instanceof ApiException ae) {
+            return ApiResult.result(null, ae.getCode(), ae.getMessage());
         }
 
         // 请求参数无法读取

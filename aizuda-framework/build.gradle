@@ -6,7 +6,6 @@ buildscript {
         mybatisPlusVersion = "3.5.12"
         springdocVersion = "2.8.8"
         jakartaServletApiVersion = "6.1.0"
-        kissoVersion = "3.9.5"
         postgresqlVersion = "42.7.6"
     }
 
@@ -83,7 +82,7 @@ subprojects {
             dependency("org.apache.tika:tika-core:3.2.0")
 
             // 单点登录
-            dependency("com.baomidou:kisso:${kissoVersion}")
+            dependency("com.baomidou:kisso:${KISSO_VERSION}")
 
             // 本地缓存
             dependency("com.github.ben-manes.caffeine:caffeine:3.2.0")

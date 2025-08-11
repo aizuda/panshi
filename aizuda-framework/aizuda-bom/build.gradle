@@ -24,6 +24,7 @@ dependencyManagement {
         dependency("com.aizuda:aizuda-security:${APP_VERSION}")
         dependency("com.aizuda:aizuda-service-parent:${APP_VERSION}")
         dependency("com.aizuda:aizuda-toolkit:${APP_VERSION}")
+        dependency("com.baomidou:kisso:${KISSO_VERSION}")
 
     }
 }

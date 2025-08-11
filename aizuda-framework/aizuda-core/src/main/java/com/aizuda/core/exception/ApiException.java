@@ -6,6 +6,7 @@
 package com.aizuda.core.exception;
 
 import com.aizuda.core.api.IErrorCode;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.PrintWriter;
@@ -28,11 +29,17 @@ public class ApiException extends RuntimeException {
     /**
      * 错误码
      */
-    private IErrorCode errorCode;
+    @Getter
+    private long code;
+
+    public ApiException(long code, String message) {
+        super(message);
+        this.code = code;
+    }
 
     public ApiException(IErrorCode errorCode) {
         super(errorCode.getMsg());
-        this.errorCode = errorCode;
+        this.code = errorCode.getCode();
     }
 
     public ApiException(String message) {
@@ -51,9 +58,5 @@ public class ApiException extends RuntimeException {
         StringWriter stringWriter = new StringWriter();
         throwable.printStackTrace(new PrintWriter(stringWriter));
         return stringWriter.toString();
-    }
-
-    public IErrorCode getErrorCode() {
-        return errorCode;
     }
 }
