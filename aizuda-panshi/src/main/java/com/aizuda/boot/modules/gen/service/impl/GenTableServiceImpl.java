@@ -2,6 +2,7 @@ package com.aizuda.boot.modules.gen.service.impl;
 
 import com.aizuda.boot.modules.gen.entity.GenDatabase;
 import com.aizuda.boot.modules.gen.entity.GenTemplate;
+import com.aizuda.boot.modules.gen.entity.GenZipContext;
 import com.aizuda.boot.modules.gen.entity.dto.GenDTO;
 import com.aizuda.boot.modules.gen.entity.vo.GenVO;
 import com.aizuda.boot.modules.gen.service.IGenDatabaseService;
@@ -28,11 +29,7 @@ import org.apache.ibatis.type.JdbcType;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.stereotype.Service;
 
-import java.io.ByteArrayOutputStream;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -89,38 +86,50 @@ public class GenTableServiceImpl implements IGenTableService {
         List<TableInfo> tableInfos = configBuilder.getTableInfoList();
 
         // 初始化模板引擎
+        String tplName = null;
+        List<GenZipContext> gzcList = new ArrayList<>();
         VelocityTemplateEngine templateEngine = new VelocityTemplateEngine().init(configBuilder);
+        try {
+            for (TableInfo ti : tableInfos) {
+                // 渲染模板
+                for (GenTemplate gt : genTemplates) {
+                    tplName = gt.getTplName();
+                    // 创建输出流
+                    Map<String, Object> objectMap = this.getObjectMap(configBuilder, ti);
+                    String zipContext = templateEngine.writer(objectMap, ti.getEntityName(), gt.getTplContent());
+
+                    // 创建文件内容
+                    String packageName = configBuilder.getPackageConfig().getParent();
+                    String zipName = packageName.replace('.', '/') + "/" + String.format(gt.getOutFile(), ti.getEntityName());
+
+                    gzcList.add(GenZipContext.of(zipName, zipContext));
+                }
+            }
+        } catch (Exception e) {
+            String errTip = "文件生成异常" ;
+            if (null != tplName) {
+                errTip = "模板: " + tplName + "，" + errTip;
+            }
+            ApiAssert.fail(errTip);
+        }
 
         // 设置响应内容类型
-        String fileName = "genCode";
+        String fileName = "genCode" ;
         if (tableInfos.size() < 2) {
             fileName = dto.getTableName().replaceAll(",", "_");
         }
         response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + ".zip\"");
         response.setContentType("application/zip");
-
         // 创建ZIP输出流
         try (ZipOutputStream zos = new ZipOutputStream(response.getOutputStream())) {
-            for (TableInfo ti : tableInfos) {
-                // 渲染模板
-                for (GenTemplate gt : genTemplates) {
-                    // 创建输出流
-                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                    Map<String, Object> objectMap = this.getObjectMap(configBuilder, ti);
-                    String context = templateEngine.writer(objectMap, ti.getEntityName(), gt.getTplContent());
-                    byteArrayOutputStream.write(context.getBytes());
-
-                    // 创建文件内容
-                    String packageName = configBuilder.getPackageConfig().getParent();
-                    ZipEntry zipEntry = new ZipEntry(packageName.replace('.', '/') + "/" +
-                            String.format(gt.getOutFile(), ti.getEntityName()));
-                    zos.putNextEntry(zipEntry);
-                    zos.write(byteArrayOutputStream.toByteArray());
-                    zos.closeEntry();
-                }
+            for (GenZipContext gzc : gzcList) {
+                ZipEntry zipEntry = new ZipEntry(gzc.getName());
+                zos.putNextEntry(zipEntry);
+                zos.write(gzc.getContext().getBytes());
+                zos.closeEntry();
             }
         } catch (Exception e) {
-            ApiAssert.fail("生成文件异常");
+            ApiAssert.fail(e.getMessage());
         }
     }
 
@@ -186,18 +195,21 @@ public class GenTableServiceImpl implements IGenTableService {
         Map<String, Object> entityData = strategyConfig.entity().renderData(tableInfo);
         objectMap.putAll(entityData);
         objectMap.put("config", config);
-        objectMap.put("package", config.getPackageConfig().getPackageInfo());
+        objectMap.put("package", config.getPackageConfig().getPackageInfo((InjectionConfig) null));
         GlobalConfig globalConfig = config.getGlobalConfig();
+        String[] tableNameArr = tableInfo.getName().split("_");
+        String systemAlias = tableNameArr[0];
+        objectMap.put("tablePermission", systemAlias + ":" + StringUtils.underlineToCamel(tableInfo.getName().substring(systemAlias.length() + 1)));
         objectMap.put("author", globalConfig.getAuthor());
         objectMap.put("kotlin", globalConfig.isKotlin());
         objectMap.put("swagger", globalConfig.isSwagger());
         objectMap.put("springdoc", globalConfig.isSpringdoc());
         objectMap.put("date", globalConfig.getCommentDate());
-        String schemaName = "";
+        String schemaName = "" ;
         if (strategyConfig.isEnableSchema()) {
             schemaName = config.getDataSourceConfig().getSchemaName();
             if (StringUtils.isNotBlank(schemaName)) {
-                schemaName = schemaName + ".";
+                schemaName = schemaName + "." ;
                 tableInfo.setConvert(true);
             }
         }
@@ -215,8 +227,8 @@ public class GenTableServiceImpl implements IGenTableService {
         List<TableField> fields = tableInfo.getFields();
         fields.forEach(tableField -> {
             TableField.MetaInfo metaInfo = tableField.getMetaInfo();
-            final String lt = "\t";
-            final String lnt = "\n\t";
+            final String lt = "\t" ;
+            final String lnt = "\n\t" ;
             final JdbcType jdbcType = metaInfo.getJdbcType();
             StringBuilder annotations = new StringBuilder();
             boolean tabLine = false;

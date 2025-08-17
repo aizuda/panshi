@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { reactive, ref, watch } from 'vue';
-import { useBoolean } from '@sa/hooks';
+import { reactive, ref, watch, computed } from 'vue';
+import { useBoolean } from '@azd/hooks';
 import { fetchGetAllGenTemplateList, fetchGetGenDatabaseSelectOption } from '@/service/api';
 import { useFormRules, useNaiveForm } from '@/hooks/common/form';
 import { useDownload } from '@/hooks/business/download';
@@ -84,9 +84,9 @@ function closeDrawer() {
 async function handleSubmit() {
   await validate();
 
-  useDownload().zip('/gen/table/download', `${model.module}-genCode.zip`, {
+  useDownload().zip('/gen/table/download', `${model.tableName}-genCode.zip`, {
     ...model,
-    databaseId: model.databaseId === 'sa-local' ? undefined : model.databaseId
+    databaseId: model.databaseId === 'azd-local' ? undefined : model.databaseId
   });
 }
 
@@ -96,9 +96,41 @@ async function handlePreview() {
   await validate();
   previewData.value = {
     ...model,
-    databaseId: model.databaseId === 'sa-local' ? undefined : model.databaseId
+    databaseId: model.databaseId === 'azd-local' ? undefined : model.databaseId
   };
   openDrawerVisible();
+}
+/**
+ * 全选所有模板
+ */
+function selectAllTemplates() {
+  model.templateIds = templateOptions.value.map(option => option.value as string);
+}
+
+/**
+ * 取消全选
+ */
+function clearAllTemplates() {
+  model.templateIds = [];
+}
+
+/**
+ * 判断是否全选
+ */
+const isAllSelected = computed(() => {
+  return templateOptions.value.length > 0 &&
+    model.templateIds.length === templateOptions.value.length;
+});
+
+/**
+ * 切换全选状态
+ */
+function toggleSelectAll() {
+  if (isAllSelected.value) {
+    clearAllTemplates();
+  } else {
+    selectAllTemplates();
+  }
 }
 
 watch(visible, () => {
@@ -135,16 +167,27 @@ watch(visible, () => {
               <NInput v-model:value="model.tableName" placeholder="请输入表名" />
             </NFormItemGi>
             <NFormItemGi :span="24" label="模板" path="templateIds">
-              <NCheckboxGroup v-model:value="model.templateIds">
-                <NSpace item-style="display: flex;">
+              <div class="template-selection-wrapper">
+                <div class="template-selection-header">
                   <NCheckbox
-                    v-for="(option, index) in templateOptions"
-                    :key="index"
-                    :value="option.value"
-                    :label="option.label"
-                  />
-                </NSpace>
-              </NCheckboxGroup>
+                    :checked="isAllSelected"
+                    :indeterminate="model.templateIds.length > 0 && !isAllSelected"
+                    @update:checked="toggleSelectAll"
+                  >
+                    {{ isAllSelected ? '取消全选' : '全选' }}
+                  </NCheckbox>
+                </div>
+                <NCheckboxGroup v-model:value="model.templateIds">
+                  <NSpace item-style="display: flex;">
+                    <NCheckbox
+                      v-for="(option, index) in templateOptions"
+                      :key="index"
+                      :value="option.value"
+                      :label="option.label"
+                    />
+                  </NSpace>
+                </NCheckboxGroup>
+              </div>
             </NFormItemGi>
           </NGrid>
         </NForm>
@@ -161,4 +204,17 @@ watch(visible, () => {
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.template-selection-wrapper {
+  width: 100%;
+}
+
+.template-selection-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--n-border-color);
+  margin-bottom: 10px;
+}
+</style>

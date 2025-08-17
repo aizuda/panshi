@@ -29,14 +29,35 @@ export function useDownload() {
     fetch(`${baseURL}${url}${url.includes('?') ? '&' : '?'}t=${now}`, {
       method: 'post',
       headers: {
-        accesstoken: `${token}`,
+        authorization: `${token}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(body)
     })
-      .then(response => response.blob())
-      .then(data => downloadByData(data, fileName, 'application/zip'))
-      .catch(err => window.$message?.error(err.message));
+      .then(async response => {
+        // 获取 Content-Type
+        const contentType = response.headers.get('content-type') || '';
+
+        // 判断是否为 JSON 错误响应
+        if (contentType.includes('application/json')) {
+          const errorData = await response.json();
+          const errorMessage = errorData.message || errorData.msg || '操作失败';
+          window.$message?.error(errorMessage);
+          return;
+        }
+
+        // 正常的 ZIP 文件流
+        if (response.ok) {
+          const data = await response.blob();
+          downloadByData(data, fileName, 'application/zip');
+        } else {
+          // 非 JSON 格式的错误响应
+          window.$message?.error(`下载失败: ${response.status} ${response.statusText}`);
+        }
+      })
+      .catch(err => {
+        window.$message?.error(err.message || '网络错误');
+      });
   }
 
   return {
