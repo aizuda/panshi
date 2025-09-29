@@ -243,13 +243,43 @@ const btnColumns: DataTableColumns<Api.System.ApiPermission> = [
       return (
         <>
           {btnEditMap.value[index] ? (
-            <ButtonIcon
-              type="success"
-              text
-              icon="ep:check"
-              tooltipContent="完成"
-              onClick={() => handleSaveMenuApi(row)}
-            />
+            <>
+              <ButtonIcon
+                type="success"
+                text
+                icon="ep:check"
+                tooltipContent="完成"
+                onClick={() => handleSaveMenuApi(row)}
+              />
+              <ButtonIcon
+                class="ml-16px"
+                type="default"
+                text
+                icon="ep:close"
+                tooltipContent="取消"
+                onClick={() => {
+                  // 如果是新增的空行，直接删除
+                  if (!row.id) {
+                    btnData.value.splice(index, 1);
+                    // 更新btnEditMap
+                    const newBtnEditMap = {...btnEditMap.value};
+                    delete newBtnEditMap[index];
+                    // 调整索引
+                    Object.keys(newBtnEditMap).forEach(key => {
+                      const keyNum = parseInt(key);
+                      if (keyNum > index) {
+                        newBtnEditMap[keyNum - 1] = newBtnEditMap[keyNum];
+                        delete newBtnEditMap[keyNum];
+                      }
+                    });
+                    btnEditMap.value = newBtnEditMap;
+                  } else {
+                    // 如果是编辑已有的行，取消编辑状态
+                    btnEditMap.value[index] = false;
+                  }
+                }}
+              />
+            </>
           ) : (
             <>
               <ButtonIcon

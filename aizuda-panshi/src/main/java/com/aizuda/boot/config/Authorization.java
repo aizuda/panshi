@@ -20,13 +20,11 @@ public class Authorization implements SSOAuthorization {
 
     @Override
     public boolean isPermitted(SSOToken token, String permission) {
-        // 暂不验证权限
-        return true;
-//        Long userId = Long.valueOf(token.getId());
-//        if (UserSession.isAdmin(userId)) {
-//            // 超级管理员免鉴权
-//            return true;
-//        }
-//        return sysResourceApiService.isPermitted(userId, permission);
+        Long userId = Long.valueOf(token.getId());
+        if (UserSession.isAdmin(userId)) {
+            // 超级管理员免鉴权
+            return true;
+        }
+        return sysResourceApiService.isPermitted(userId, permission);
     }
 }

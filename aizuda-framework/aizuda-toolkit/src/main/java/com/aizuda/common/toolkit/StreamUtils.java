@@ -70,7 +70,6 @@ public class StreamUtils {
      * @param function 你想要进行的操作，需要带返回值
      *                 lambda写法例如：{@code i-> i.getId()或者 User::getId }
      *                 多个字段写法例如：{@code i-> i.getId() + ";" + i.getName() }
-     * @return {@link List}<{@link T}> 去重后的集合
      */
     public static <T, U extends Comparable<? super U>> List<T> distinct(List<T> list, Function<T, U> function) {
         if (CollectionUtils.isEmpty(list)) {

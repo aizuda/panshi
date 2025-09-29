@@ -2,7 +2,7 @@ description "爱组搭安全模块"
 
 dependencies {
     api project(":aizuda-toolkit")
-    api("com.baomidou:kisso")
+    api("com.baomidou:kisso:${kissoVersion}")
 
     compileOnly("org.springframework.boot:spring-boot-starter-web")
 

@@ -11,10 +11,10 @@ ext {
 // 编译脚本
 buildscript {
     ext {
-        springBootVersion = "3.5.0"
-        springdocVersion = "2.8.8"
-        mybatisPlusVersion = "3.5.12"
-        aizudaVersion = "1.1.1"
+        springBootVersion = "3.5.6"
+        springdocVersion = "2.8.13"
+        mybatisPlusVersion = "3.5.14"
+        aizudaVersion = "1.1.2"
     }
 
     // 仓库配置
@@ -66,20 +66,17 @@ dependencyManagement {
 }
 
 dependencies {
-    implementation("com.aizuda:aizuda-service-parent") {
-        // 纯 mysql 运行环境打开该配置排除 PG 依赖
-        // exclude group:"org.postgresql", module:"postgresql"
-    }
-    // mysql 驱动，纯 PG 环境可删除该依赖
-    implementation("mysql:mysql-connector-java:8.0.33")
+    implementation("com.aizuda:aizuda-service-parent")
 
     // ORM
     implementation("com.baomidou:mybatis-plus-spring-boot3-starter")
     implementation("com.baomidou:mybatis-plus-jsqlparser")
     implementation("com.baomidou:mybatis-plus-generator")
+    implementation("org.postgresql:postgresql:42.7.8")
+    // implementation("mysql:mysql-connector-java:8.0.33")
 
     // SSO 单点登录
-    implementation("com.baomidou:kisso")
+    implementation("com.baomidou:kisso:3.9.5")
 
     // 本地缓存
     implementation("com.github.ben-manes.caffeine:caffeine")
@@ -127,8 +124,7 @@ jar {
     // 自定义 jar 任务以设置 MANIFEST.MF 配置分离 lib 加载
     manifest {
         attributes(
-                'Main-Class': 'com.aizuda.boot.BootApplication',
-                'Class-Path': configurations.runtimeClasspath.collect(({ "lib/${it.name}" } as Closure<Object>)).join(' ')
+            'Main-Class': 'com.aizuda.boot.BootApplication',
         )
     }
 }

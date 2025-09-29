@@ -63,9 +63,9 @@ public class AizudaAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnProperty(prefix = "spring.boot.admin.client.instance.metadata", name = "user.name")
-    public FilterRegistrationBean basicAuthenticateFilter(@Value("${spring.boot.admin.client.instance.metadata.user.name}") String username,
+    public FilterRegistrationBean<BasicAuthenticateFilter> basicAuthenticateFilter(@Value("${spring.boot.admin.client.instance.metadata.user.name}") String username,
                                                           @Value("${spring.boot.admin.client.instance.metadata.user.password}") String password) {
-        FilterRegistrationBean registrationBean = new FilterRegistrationBean();
+        FilterRegistrationBean<BasicAuthenticateFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(new BasicAuthenticateFilter(username, password));
         registrationBean.addUrlPatterns("/actuator", "/actuator/**");
         registrationBean.setOrder(Integer.MAX_VALUE);

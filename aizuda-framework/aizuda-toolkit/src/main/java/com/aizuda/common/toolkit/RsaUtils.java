@@ -5,7 +5,6 @@
  */
 package com.aizuda.common.toolkit;
 
-import com.baomidou.kisso.common.util.Base64Util;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
@@ -19,12 +18,13 @@ import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.Base64;
 import java.util.Objects;
 
 /**
  * RSA 工具类
  * <p>
- * 使用该类需要依赖包 `com.baomidou:kisso` 加密包 `org.bouncycastle:bcprov-jdk15on:1.70`
+ * 使用该类需要依赖包 `com.baomidou:kisso` 加密包 `org.bouncycastle:bcprov-jdk18on`
  * </p>
  * 尊重知识产权，CV 请保留版权，开发平台不允许做非法网站，后果自负
  *
@@ -81,12 +81,13 @@ public final class RsaUtils {
         RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
 
         KeyStore keyStore = new KeyStore();
+        Base64.Encoder base64Encoder =  Base64.getEncoder();
         if (Objects.equals(PKCS1, this.keyFormat)) {
-            keyStore.setPublicKey(Base64Util.encode(publicKey.getEncoded()));
+            keyStore.setPublicKey(base64Encoder.encodeToString(publicKey.getEncoded()));
             keyStore.setPrivateKey(convertPkcs8ToPkcs1(privateKey.getEncoded()));
         } else {
-            keyStore.setPublicKey(Base64Util.encode(publicKey.getEncoded()));
-            keyStore.setPrivateKey(Base64Util.encode(privateKey.getEncoded()));
+            keyStore.setPublicKey(base64Encoder.encodeToString(publicKey.getEncoded()));
+            keyStore.setPrivateKey(base64Encoder.encodeToString(privateKey.getEncoded()));
         }
         return keyStore;
     }
@@ -96,7 +97,6 @@ public final class RsaUtils {
      *
      * @param pubKeyData 公钥
      * @return 返回公钥对象
-     * @throws Exception
      */
     public RSAPublicKey getPublicKey(byte[] pubKeyData) throws Exception {
         X509EncodedKeySpec keySpec = new X509EncodedKeySpec(pubKeyData);
@@ -109,10 +109,9 @@ public final class RsaUtils {
      *
      * @param pubKey 公钥
      * @return 返回私钥对象
-     * @throws Exception
      */
     public RSAPublicKey getPublicKey(String pubKey) throws Exception {
-        return getPublicKey(Base64Util.decode(pubKey));
+        return getPublicKey(Base64.getDecoder().decode(pubKey));
 
     }
 
@@ -121,18 +120,16 @@ public final class RsaUtils {
      *
      * @param priKey 私钥
      * @return 私钥对象
-     * @throws Exception
      */
     public RSAPrivateKey getPrivateKey(String priKey) throws Exception {
-        return getPrivateKey(Base64Util.decode(priKey));
+        return getPrivateKey(Base64.getDecoder().decode(priKey));
     }
 
     /**
      * 通过私钥byte[]将公钥还原，适用于RSA算法
      *
-     * @param keyBytes
+     * @param keyBytes 字节数组
      * @return 返回私钥
-     * @throws Exception
      */
     public RSAPrivateKey getPrivateKey(byte[] keyBytes) throws Exception {
         PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(keyBytes);
@@ -153,7 +150,6 @@ public final class RsaUtils {
      * @param data      待加密内容
      * @param publicKey 公钥
      * @return 返回密文
-     * @throws Exception
      */
     public String encryptByPublicKey(String data, RSAPublicKey publicKey) throws Exception {
         Cipher cipher = this.getCipher(keyFormat, Cipher.ENCRYPT_MODE, publicKey);
@@ -161,12 +157,12 @@ public final class RsaUtils {
         int key_len = publicKey.getModulus().bitLength() / 8;
         // 加密数据长度 <= 模长-11
         String[] dataArr = splitString(data, key_len - 11);
-        String text = "";
+        StringBuilder text = new StringBuilder();
         // 如果明文长度大于模长-11则要分组加密
         for (String s : dataArr) {
-            text += bcd2Str(cipher.doFinal(s.getBytes()));
+            text.append(bcd2Str(cipher.doFinal(s.getBytes())));
         }
-        return text;
+        return text.toString();
     }
 
     public String encryptByPrivateKey(String data, String privateKey) throws Exception {
@@ -179,7 +175,6 @@ public final class RsaUtils {
      * @param data       待加密数据
      * @param privateKey 私钥
      * @return 返回密文
-     * @throws Exception
      */
     public String encryptByPrivateKey(String data, RSAPrivateKey privateKey) throws Exception {
         Cipher cipher = this.getCipher(keyFormat, Cipher.ENCRYPT_MODE, privateKey);
@@ -187,12 +182,12 @@ public final class RsaUtils {
         int key_len = privateKey.getModulus().bitLength() / 8;
         // 加密数据长度 <= 模长-11
         String[] dataArr = splitString(data, key_len - 11);
-        String text = "";
+        StringBuilder text = new StringBuilder();
         // 如果明文长度大于模长-11则要分组加密
         for (String s : dataArr) {
-            text += bcd2Str(cipher.doFinal(s.getBytes()));
+            text.append(bcd2Str(cipher.doFinal(s.getBytes())));
         }
-        return text;
+        return text.toString();
     }
 
     public String decryptByPrivateKey(String data, String privateKey) throws Exception {
@@ -205,7 +200,6 @@ public final class RsaUtils {
      * @param data       待解密内容
      * @param privateKey 私钥
      * @return 返回明文
-     * @throws Exception
      */
     public String decryptByPrivateKey(String data, RSAPrivateKey privateKey) throws Exception {
         Cipher cipher = this.getCipher(keyFormat, Cipher.DECRYPT_MODE, privateKey);
@@ -214,12 +208,12 @@ public final class RsaUtils {
         byte[] bytes = data.getBytes();
         byte[] bcd = ASCII_To_BCD(bytes, bytes.length);
         // 如果密文长度大于模长则要分组解密
-        String text = "";
+        StringBuilder text = new StringBuilder();
         byte[][] arrays = splitArray(bcd, key_len);
         for (byte[] arr : arrays) {
-            text += new String(cipher.doFinal(arr));
+            text.append(new String(cipher.doFinal(arr)));
         }
-        return text;
+        return text.toString();
     }
 
     /**
@@ -228,7 +222,6 @@ public final class RsaUtils {
      * @param data         待解密内容
      * @param rsaPublicKey 公钥
      * @return 返回明文
-     * @throws Exception
      */
     public String decryptByPublicKey(String data, RSAPublicKey rsaPublicKey) throws Exception {
         Cipher cipher = this.getCipher(keyFormat, Cipher.DECRYPT_MODE, rsaPublicKey);
@@ -250,7 +243,7 @@ public final class RsaUtils {
         ASN1Encodable asn1Encodable = pkInfo.parsePrivateKey();
         ASN1Primitive primitive = asn1Encodable.toASN1Primitive();
         byte[] privateKeyPKCS1 = primitive.getEncoded();
-        return Base64Util.encode(privateKeyPKCS1);
+        return Base64.getEncoder().encodeToString(privateKeyPKCS1);
     }
 
 

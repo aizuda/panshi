@@ -18,19 +18,19 @@ dependencies {
     // 为了减少依赖 jar 体量，非公共依赖不要申明为 api 必须遵守在负责人同意允许后在对应项目中添加
 
     // 文档
-    api("org.springdoc:springdoc-openapi-starter-common")
+    api("org.springdoc:springdoc-openapi-starter-common:${springdocVersion}")
 
     // 日志
     api('org.springframework.boot:spring-boot-starter-log4j2')
-    api("com.lmax:disruptor")
+    api("com.lmax:disruptor:4.0.0")
 
     // 数据库相关
     api("org.springframework.boot:spring-boot-starter-jdbc")
-    api("org.postgresql:postgresql")
-    api("com.baomidou:mybatis-plus-spring-boot3-starter")
-    api("com.baomidou:mybatis-plus-jsqlparser")
+    compileOnly("org.postgresql:postgresql")
+    compileOnly("com.baomidou:mybatis-plus-spring-boot3-starter:${mybatisPlusVersion}")
+    compileOnly("com.baomidou:mybatis-plus-jsqlparser:${mybatisPlusVersion}")
 
-    api("com.baomidou:kisso")
+    api("com.baomidou:kisso:${kissoVersion}")
     // 为了减少依赖 jar 体量，非公共依赖不要申明为 api 必须遵守在负责人同意允许后在对应项目中添加
 
     compileOnly("org.aspectj:aspectjweaver")

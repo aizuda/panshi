@@ -2,9 +2,9 @@ description "爱组搭低代码组件化开发工具类包"
 
 dependencies {
     compileOnly("org.springframework.boot:spring-boot-starter-web")
-    compileOnly("com.baomidou:kisso")
-    compileOnly("org.bouncycastle:bcprov-jdk15on")
+    compileOnly("com.baomidou:kisso:${kissoVersion}")
+    compileOnly("org.bouncycastle:bcprov-jdk18on:${bcprovJdk18onVersion}")
 
-    testImplementation("com.baomidou:kisso")
-    testImplementation("org.bouncycastle:bcprov-jdk15on")
+    testImplementation("com.baomidou:kisso:${kissoVersion}")
+    testImplementation("org.bouncycastle:bcprov-jdk18on:${bcprovJdk18onVersion}")
 }

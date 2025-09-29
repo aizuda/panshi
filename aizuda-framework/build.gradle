@@ -2,11 +2,13 @@
 buildscript {
     ext {
         // https://start.spring.io/actuator/info
-        springBootVersion = "3.5.0"
-        mybatisPlusVersion = "3.5.12"
-        springdocVersion = "2.8.8"
+        springBootVersion = "3.5.6"
+        mybatisPlusVersion = "3.5.14"
+        springdocVersion = "2.8.13"
         jakartaServletApiVersion = "6.1.0"
-        postgresqlVersion = "42.7.6"
+        postgresqlVersion = "42.7.8"
+        bcprovJdk18onVersion = "1.82"
+        kissoVersion = "3.9.5"
     }
 
     // 仓库配置
@@ -63,40 +65,6 @@ subprojects {
         imports {
             mavenBom "org.springframework.boot:spring-boot-dependencies:${springBootVersion}"
         }
-
-        dependencies {
-            // 文档
-            dependency("org.springdoc:springdoc-openapi-starter-common:${springdocVersion}")
-            dependency("jakarta.servlet:jakarta.servlet-api:${jakartaServletApiVersion}")
-
-            // 工具类
-            dependency("org.jodd:jodd-bean:5.1.6")
-            dependency("commons-io:commons-io:2.19.0")
-            dependency("commons-collections:commons-collections:3.2.2")
-            dependency("org.apache.commons:commons-lang3:3.17.0")
-            dependency("org.apache.commons:commons-pool2:2.12.1")
-            dependency("org.bouncycastle:bcprov-jdk15on:1.70")
-            dependency("com.lmax:disruptor:4.0.0")
-            // http://deepoove.com/poi-tl/
-            dependency("com.deepoove:poi-tl:1.12.2")
-            dependency("org.apache.tika:tika-core:3.2.0")
-
-            // 单点登录
-            dependency("com.baomidou:kisso:${KISSO_VERSION}")
-
-            // 本地缓存
-            dependency("com.github.ben-manes.caffeine:caffeine:3.2.0")
-
-            // 监控
-            dependency("com.github.oshi:oshi-core:6.8.2")
-
-            // orm db
-            dependency("com.baomidou:mybatis-plus-spring-boot3-starter:${mybatisPlusVersion}")
-            dependency("com.baomidou:mybatis-plus-jsqlparser:${mybatisPlusVersion}")
-            dependency("com.baomidou:mybatis-plus-generator:${mybatisPlusVersion}")
-            dependency("com.baomidou:mybatis-plus-extension:${mybatisPlusVersion}")
-            dependency("org.postgresql:postgresql:${postgresqlVersion}")
-        }
     }
 
     // 依赖配置
@@ -108,7 +76,7 @@ subprojects {
         // 为了减少依赖 jar 体量，非公共依赖不要申明为 api 必须遵守在负责人同意允许后在对应项目中添加
 
         compileOnly("org.springframework.boot:spring-boot-starter-log4j2")
-        compileOnly("jakarta.servlet:jakarta.servlet-api")
+        compileOnly("jakarta.servlet:jakarta.servlet-api:${jakartaServletApiVersion}")
         compileOnly("org.aspectj:aspectjweaver")
 
         // 编译测试
