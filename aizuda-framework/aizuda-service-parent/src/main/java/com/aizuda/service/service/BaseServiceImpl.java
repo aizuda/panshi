@@ -6,8 +6,7 @@
 package com.aizuda.service.service;
 
 import com.aizuda.service.mapper.CrudMapper;
-import com.baomidou.mybatisplus.extension.repository.CrudRepository;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.spring.repository.CrudRepository;
 
 /**
  * <a href="http://aizuda.com">爱组搭</a>低代码组件化开发平台

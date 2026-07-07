@@ -2,9 +2,9 @@
 buildscript {
     ext {
         // https://start.spring.io/actuator/info
-        springBootVersion = "3.5.6"
-        mybatisPlusVersion = "3.5.14"
-        springdocVersion = "2.8.13"
+        springBootVersion = "3.5.16"
+        mybatisPlusVersion = "3.5.17"
+        springdocVersion = "2.8.17"
         jakartaServletApiVersion = "6.1.0"
         postgresqlVersion = "42.7.8"
         bcprovJdk18onVersion = "1.82"

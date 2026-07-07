@@ -8,7 +8,6 @@ package com.aizuda.service.service;
 import com.aizuda.core.api.ApiAssert;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.repository.IRepository;
-import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.Collection;
 import java.util.function.Supplier;
