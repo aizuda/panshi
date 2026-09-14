@@ -7,7 +7,6 @@ package com.aizuda.service.web;
 
 import com.aizuda.common.toolkit.ThrowableUtils;
 import com.aizuda.core.api.ApiResult;
-import com.aizuda.core.api.IErrorCode;
 import com.aizuda.core.exception.ApiException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -24,7 +23,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import org.springframework.web.util.NestedServletException;
 
 import java.util.List;
 import java.util.Optional;

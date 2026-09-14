@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { reactive, ref, watch, computed } from 'vue';
-import { useBoolean } from '@azd/hooks';
+import { useBoolean } from '@sa/hooks';
 import { fetchGetAllGenTemplateList, fetchGetGenDatabaseSelectOption } from '@/service/api';
 import { useFormRules, useNaiveForm } from '@/hooks/common/form';
 import { useDownload } from '@/hooks/business/download';

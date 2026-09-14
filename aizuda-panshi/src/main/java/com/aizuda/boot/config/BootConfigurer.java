@@ -5,13 +5,8 @@
  */
 package com.aizuda.boot.config;
 
-import jakarta.annotation.Resource;
-import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -19,29 +14,18 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 
-import java.util.List;
-
-
 /**
  * WEB 初始化相关配置
  *
  * @author 青苗
  * @since 1.0.0
  */
-@ControllerAdvice
-@Configuration
+@Configuration(proxyBeanMethods = false)
 public class BootConfigurer implements WebMvcConfigurer {
-    @Resource
-    private HttpMessageConverters jacksonHttpMessageConverters;
-    @Resource
-    private Environment environment;
 
     @Bean
     public LocaleResolver localeResolver() {
-        CookieLocaleResolver cookieLocaleResolver = new CookieLocaleResolver();
-        // 多语言 cookie 名称设置
-        cookieLocaleResolver.setCookieName("locale");
-        return cookieLocaleResolver;
+        return new CookieLocaleResolver("locale");
     }
 
     @Override
@@ -58,12 +42,6 @@ public class BootConfigurer implements WebMvcConfigurer {
                 .maxAge(3600)
                 .allowedOriginPatterns("*")
                 .allowedHeaders("*");
-    }
-
-    @Override
-    public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
-        converters.clear();
-        converters.addAll(jacksonHttpMessageConverters.getConverters());
     }
 
 }

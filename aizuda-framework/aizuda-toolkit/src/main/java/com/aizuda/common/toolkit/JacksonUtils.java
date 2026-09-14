@@ -22,7 +22,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.fasterxml.jackson.databind.type.CollectionLikeType;
 import com.fasterxml.jackson.databind.type.MapType;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.Nullable;
 import org.springframework.util.ObjectUtils;
@@ -715,7 +714,6 @@ public class JacksonUtils {
             SimpleModule simpleModule = new SimpleModule();
             simpleModule.addSerializer(Long.class, ToStringSerializer.instance);
             super.registerModule(simpleModule);
-            super.registerModule(new JavaTimeModule());
             super.findAndRegisterModules();
         }
 

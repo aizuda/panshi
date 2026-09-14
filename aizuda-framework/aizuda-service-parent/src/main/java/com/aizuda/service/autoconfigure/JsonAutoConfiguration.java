@@ -9,22 +9,22 @@ import com.aizuda.service.editors.DoubleEditor;
 import com.aizuda.service.editors.IntegerEditor;
 import com.aizuda.service.editors.LongEditor;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.MapperFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
-import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
+import org.springframework.boot.http.converter.autoconfigure.ServerHttpMessageConvertersCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
-import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.http.converter.json.JacksonJsonHttpMessageConverter;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import tools.jackson.databind.MapperFeature;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.module.SimpleModule;
+import tools.jackson.databind.ser.std.ToStringSerializer;
 
 import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
@@ -90,22 +90,24 @@ public class JsonAutoConfiguration {
      * 消息转换
      */
     @Bean
-    public HttpMessageConverters jacksonHttpMessageConverters() {
-        final Jackson2ObjectMapperBuilder builder = new Jackson2ObjectMapperBuilder();
-        builder.serializationInclusion(JsonInclude.Include.NON_NULL);
-        // 忽略 transient 关键词属性
-        builder.featuresToEnable(MapperFeature.PROPAGATE_TRANSIENT_MARKER);
-        final ObjectMapper objectMapper = builder.build();
+    public ServerHttpMessageConvertersCustomizer jacksonHttpMessageConverters() {
         SimpleModule simpleModule = new SimpleModule();
         // Long 转为 String 防止 js 丢失精度
         simpleModule.addSerializer(Long.class, ToStringSerializer.instance);
-        objectMapper.registerModule(simpleModule);
-        // 设置时区
-        objectMapper.setTimeZone(TimeZone.getTimeZone(timeZone));
-        MappingJackson2HttpMessageConverter jacksonConverter = new MappingJackson2HttpMessageConverter(objectMapper);
-        jacksonConverter.setDefaultCharset(StandardCharsets.UTF_8);
+        JsonMapper objectMapper = JsonMapper.builder()
+                .changeDefaultPropertyInclusion(value -> JsonInclude.Value.construct(
+                        JsonInclude.Include.NON_NULL, JsonInclude.Include.NON_NULL))
+                // 忽略 transient 关键词属性
+                .enable(MapperFeature.PROPAGATE_TRANSIENT_MARKER)
+                .addModule(simpleModule)
+                // 设置时区
+                .defaultTimeZone(TimeZone.getTimeZone(timeZone))
+                .build();
+        HttpMessageConverter<?> jacksonConverter = new JacksonJsonHttpMessageConverter(objectMapper);
         StringHttpMessageConverter stringConverter = new StringHttpMessageConverter(StandardCharsets.UTF_8);
         stringConverter.setDefaultCharset(StandardCharsets.UTF_8);
-        return new HttpMessageConverters(jacksonConverter, stringConverter);
+        return serverBuilder -> serverBuilder.registerDefaults()
+                .withJsonConverter(jacksonConverter)
+                .withStringConverter(stringConverter);
     }
 }

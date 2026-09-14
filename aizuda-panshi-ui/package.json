@@ -40,6 +40,7 @@
   },
   "dependencies": {
     "@better-scroll/core": "2.5.1",
+    "@iconify/utils": "^3.1.7",
     "@iconify/vue": "5.0.0",
     "@sa/axios": "workspace:*",
     "@sa/color": "workspace:*",

@@ -124,7 +124,6 @@ declare module 'vue' {
     StatusSwitch: typeof import('./../components/common/status-switch.vue')['default']
     StatusTag: typeof import('./../components/common/status-tag.vue')['default']
     SvgIcon: typeof import('./../components/custom/svg-icon.vue')['default']
-    SystemAlert: typeof import('./../components/custom/system-alert.vue')['default']
     SystemLogo: typeof import('./../components/common/system-logo.vue')['default']
     TableColumnSetting: typeof import('./../components/advanced/table-column-setting.vue')['default']
     TableHeaderOperation: typeof import('./../components/advanced/table-header-operation.vue')['default']

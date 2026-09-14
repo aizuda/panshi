@@ -2,11 +2,11 @@
 buildscript {
     ext {
         // https://start.spring.io/actuator/info
-        springBootVersion = "3.5.16"
+        springBootVersion = "4.1.1"
         mybatisPlusVersion = "3.5.17"
-        springdocVersion = "2.8.17"
+        springdocVersion = "3.1.1"
         jakartaServletApiVersion = "6.1.0"
-        postgresqlVersion = "42.7.8"
+        postgresqlVersion = "42.7.13"
         bcprovJdk18onVersion = "1.82"
         kissoVersion = "3.9.5"
     }
@@ -54,10 +54,6 @@ subprojects {
     configurations {
         all*.exclude group: "ch.qos.logback"
         all*.exclude module: "spring-boot-starter-logging"
-        // 使用Undertow 替代Tomcat
-        all*.exclude group: "org.apache.tomcat"
-        all*.exclude group: "org.apache.tomcat.embed"
-        all*.exclude module: "spring-boot-starter-tomcat"
     }
 
     // 依赖管理

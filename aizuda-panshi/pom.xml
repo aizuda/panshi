@@ -10,13 +10,15 @@
 
 	<properties>
 		<java.version>17</java.version>
+		<maven.compiler.source>${java.version}</maven.compiler.source>
+		<maven.compiler.target>${java.version}</maven.compiler.target>
 		<maven.compiler.parameters>true</maven.compiler.parameters>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<spring-boot.version>3.5.16</spring-boot.version>
+		<spring-boot.version>4.1.1</spring-boot.version>
 		<mybatis-plus.version>3.5.17</mybatis-plus.version>
-		<aizuda.version>1.1.3</aizuda.version>
-		<springdoc.version>2.8.17</springdoc.version>
+		<aizuda.version>1.2.0</aizuda.version>
+		<springdoc.version>3.1.1</springdoc.version>
 		<skipTests>true</skipTests>
 	</properties>
 
@@ -85,11 +87,16 @@
 			<groupId>jakarta.servlet</groupId>
 			<artifactId>jakarta.servlet-api</artifactId>
 		</dependency>
+		<!-- Embedded Servlet container required for executable web applications. -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+		</dependency>
 
 		<!-- ORM -->
 		<dependency>
 			<groupId>com.baomidou</groupId>
-			<artifactId>mybatis-plus-spring-boot3-starter</artifactId>
+			<artifactId>mybatis-plus-spring-boot4-starter</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.baomidou</groupId>
@@ -155,7 +162,7 @@
 		<dependency>
 			<groupId>com.lmax</groupId>
 			<artifactId>disruptor</artifactId>
-			<version>3.4.4</version>
+			<version>4.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>p6spy</groupId>
@@ -199,6 +206,7 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>${spring-boot.version}</version>
 			</plugin>
 		</plugins>
 	</build>

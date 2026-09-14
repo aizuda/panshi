@@ -1,8 +1,6 @@
 package com.aizuda.cache.autoconfigure;
 
 import com.aizuda.cache.RedisTemplateCache;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cache.CacheManager;
@@ -15,8 +13,12 @@ import org.springframework.data.redis.connection.*;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.GenericJacksonJsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import tools.jackson.databind.DefaultTyping;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
+import tools.jackson.databind.jsontype.PolymorphicTypeValidator;
 
 import java.time.Duration;
 import java.util.HashSet;
@@ -92,13 +94,25 @@ public class RedisAutoConfiguration {
     public RedisTemplate<String, Object> redisObjectTemplate(RedisConnectionFactory factory) {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(factory);
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.activateDefaultTyping(BasicPolymorphicTypeValidator.builder().allowIfBaseType(Object.class).build(), ObjectMapper.DefaultTyping.NON_FINAL);
-        Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer<>(objectMapper, Object.class);
+
+        // 1. 创建 Jackson 3 的 PolymorphicTypeValidator（安全校验）
+        PolymorphicTypeValidator ptv = BasicPolymorphicTypeValidator.builder()
+                .allowIfBaseType(Object.class)
+                .build();
+
+        // 2. 使用 Jackson 3 的 JsonMapper 构建器激活默认类型信息
+        JsonMapper objectMapper = JsonMapper.builder()
+                .activateDefaultTyping(ptv, DefaultTyping.NON_FINAL)
+                .build();
+
+        // 3. 使用 Spring Data Redis 4 提供的 GenericJacksonJsonRedisSerializer
+        GenericJacksonJsonRedisSerializer jsonSerializer = new GenericJacksonJsonRedisSerializer(objectMapper);
+
         template.setKeySerializer(new StringRedisSerializer());
-        template.setValueSerializer(jackson2JsonRedisSerializer);
+        template.setValueSerializer(jsonSerializer);
         template.setHashKeySerializer(new StringRedisSerializer());
-        template.setHashValueSerializer(jackson2JsonRedisSerializer);
+        template.setHashValueSerializer(jsonSerializer);
+
         template.afterPropertiesSet();
         return template;
     }

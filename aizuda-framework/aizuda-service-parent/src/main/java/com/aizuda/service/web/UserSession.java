@@ -29,18 +29,25 @@ import java.util.Objects;
 public class UserSession {
     // 会话ID
     private String sid;
+    // 租户ID
+    private Long tenantId;
+    // 租户用户ID
+    private Long uid;
     // 用户ID
-    private String userId;
+    private Long userId;
     // 用户名
     private String username;
 
-    public UserSession(String id, String issuer) {
-        this.userId = id;
+    public UserSession(String tenantId, String id, String issuer) {
+        if (null != tenantId) {
+            this.tenantId = Long.valueOf(tenantId);
+        }
+        this.userId = Long.valueOf(id);
         this.username = issuer;
     }
 
     public Long getId() {
-        return Long.valueOf(this.userId);
+        return this.userId;
     }
 
     public static UserSession getLoginInfo() {
@@ -59,10 +66,11 @@ public class UserSession {
             }
             ApiAssert.fail("未登录");
         }
-        UserSession userSession = new UserSession(ssoToken.getId(), ssoToken.getIssuer());
+        UserSession userSession = new UserSession(ssoToken.getTenantId(), ssoToken.getId(), ssoToken.getIssuer());
         Map<String, Object> data = ssoToken.getData();
         if (null != data) {
             userSession.setSid((String) data.get("sid"));
+            userSession.setUid((Long) data.get("uid"));
         }
         return userSession;
     }

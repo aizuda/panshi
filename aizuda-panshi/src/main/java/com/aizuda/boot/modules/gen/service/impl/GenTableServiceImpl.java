@@ -26,7 +26,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import org.apache.commons.collections.MapUtils;
 import org.apache.ibatis.type.JdbcType;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
+import org.springframework.boot.jdbc.autoconfigure.DataSourceProperties;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
