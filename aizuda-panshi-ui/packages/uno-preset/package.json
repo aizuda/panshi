@@ -8,5 +8,9 @@
     "*": {
       "*": ["./src/*"]
     }
+  },
+  "dependencies": {
+    "@unocss/core": "66.13.0",
+    "@unocss/preset-uno": "66.13.0"
   }
 }

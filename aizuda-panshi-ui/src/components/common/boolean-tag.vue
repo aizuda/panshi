@@ -14,7 +14,7 @@ const tagMap: Record<string, NaiveUI.ThemeColor> = {
   false: 'error'
 };
 
-const attrs: TagProps = useAttrs();
+const attrs = useAttrs() as TagProps;
 </script>
 
 <template>

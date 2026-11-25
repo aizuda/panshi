@@ -1,5 +1,11 @@
 # 更新日志
 
+## [v1.2.0] 2026.11.25
+
+- opt: 优化升级 mybatis-plus 版本为 3.5.18.1
+- opt: 优化升级 spring-boot 版本为 4.2.0
+- opt: 优化升级 spring-doc 版本为 3.2.1
+
 ## [v1.1.3] 2026.07.07
 
 - opt: 优化升级 mybatis-plus 版本为 3.5.17

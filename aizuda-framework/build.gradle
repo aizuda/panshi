@@ -2,12 +2,10 @@
 buildscript {
     ext {
         // https://start.spring.io/actuator/info
-        springBootVersion = "4.1.1"
-        mybatisPlusVersion = "3.5.17"
-        springdocVersion = "3.1.1"
-        jakartaServletApiVersion = "6.1.0"
-        postgresqlVersion = "42.7.13"
-        bcprovJdk18onVersion = "1.82"
+        springBootVersion = "4.2.0"
+        mybatisPlusVersion = "3.5.18.1"
+        springdocVersion = "3.2.1"
+        bcprovJdk18onVersion = "1.87"
         kissoVersion = "3.9.5"
     }
 
@@ -72,11 +70,12 @@ subprojects {
         // 为了减少依赖 jar 体量，非公共依赖不要申明为 api 必须遵守在负责人同意允许后在对应项目中添加
 
         compileOnly("org.springframework.boot:spring-boot-starter-log4j2")
-        compileOnly("jakarta.servlet:jakarta.servlet-api:${jakartaServletApiVersion}")
+        compileOnly("jakarta.servlet:jakarta.servlet-api")
         compileOnly("org.aspectj:aspectjweaver")
 
         // 编译测试
         testImplementation("org.springframework.boot:spring-boot-starter-test")
+        testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     }
 
     // 编译环境 JDK-17+

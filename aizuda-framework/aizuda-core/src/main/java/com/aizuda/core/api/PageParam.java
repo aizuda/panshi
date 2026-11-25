@@ -6,10 +6,9 @@
 package com.aizuda.core.api;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.Setter;
-
-import jakarta.validation.constraints.Positive;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -42,6 +41,11 @@ public class PageParam<T> implements Serializable {
     private Long pageSize;
 
     /**
+     * 查询总数
+     */
+    private boolean searchCount = true;
+
+    /**
      * 查询实体对象
      */
     private T data;
@@ -57,6 +61,6 @@ public class PageParam<T> implements Serializable {
         if (null == this.page) {
             this.page = 1L;
         }
-        return new Page(this.page, this.pageSize);
+        return new Page(this.page, this.pageSize, this.searchCount);
     }
 }

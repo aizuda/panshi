@@ -33,7 +33,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const DEFAULT_CLASS = 'h-[36px] text-icon';
 
-const attrs: ButtonProps = useAttrs();
+const attrs = useAttrs() as ButtonProps;
 
 const quaternary = computed(() => {
   return !(attrs.text || attrs.dashed || attrs.ghost) && props.quaternary;

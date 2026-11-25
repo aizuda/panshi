@@ -34,7 +34,7 @@ public class UserSession {
     // 租户用户ID
     private Long uid;
     // 用户ID
-    private Long userId;
+    private String userId;
     // 用户名
     private String username;
 
@@ -42,12 +42,12 @@ public class UserSession {
         if (null != tenantId) {
             this.tenantId = Long.valueOf(tenantId);
         }
-        this.userId = Long.valueOf(id);
+        this.userId = id;
         this.username = issuer;
     }
 
     public Long getId() {
-        return this.userId;
+        return Long.valueOf(this.userId);
     }
 
     public static UserSession getLoginInfo() {

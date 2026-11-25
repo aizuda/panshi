@@ -21,7 +21,7 @@ const tagMap: Record<Api.Common.EnableStatus, NaiveUI.ThemeColor> = {
   0: 'warning'
 };
 
-const attrs: TagProps = useAttrs();
+const attrs = useAttrs() as TagProps;
 </script>
 
 <template>

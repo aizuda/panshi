@@ -4,7 +4,7 @@ dependencies {
     api project(":aizuda-toolkit")
 
     // 本地缓存
-    compileOnly("com.github.ben-manes.caffeine:caffeine:3.2.2")
+    compileOnly("com.github.ben-manes.caffeine:caffeine")
     compileOnly("org.springframework.boot:spring-boot-starter-data-redis")
 
     compileOnly("org.springframework.boot:spring-boot-starter-web")

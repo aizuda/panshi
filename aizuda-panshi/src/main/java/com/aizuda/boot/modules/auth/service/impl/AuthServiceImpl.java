@@ -44,7 +44,7 @@ public class AuthServiceImpl implements IAuthService {
     public Map<String, Object> login(HttpServletRequest request, HttpServletResponse response, LoginParam loginParam) {
         ApiAssert.fail(StringUtils.isEmpty(loginParam.getUsername())
                 || StringUtils.isEmpty(loginParam.getPassword()), "用户名密码不能为空");
-        ApiAssert.fail(!Objects.equals("azd123", loginParam.getCode()), "请输入正确的验证码");
+        ApiAssert.fail(!Objects.equals("9527", loginParam.getCode()), "请输入正确的验证码");
         List<SysUser> userList = sysUserService.list(Wrappers.<SysUser>query().eq("username", loginParam.getUsername()));
         ApiAssert.fail(null == userList || userList.size() != 1, "用户不存或异常数据");
         SysUser user = userList.get(0);
