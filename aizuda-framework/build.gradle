@@ -12,10 +12,10 @@ buildscript {
     // 仓库配置
     repositories {
         mavenLocal()
+        mavenCentral()
         maven { url 'https://maven.aliyun.com/repository/central' }
         maven { url 'https://maven.aliyun.com/repository/spring' }
         maven { url 'https://maven.aliyun.com/repository/google' }
-        mavenCentral()
     }
 
     dependencies {
@@ -42,11 +42,11 @@ subprojects {
     // 仓库配置
     repositories {
         mavenLocal()
+        mavenCentral()
         maven { url 'https://maven.aliyun.com/repository/central' }
         maven { url 'https://maven.aliyun.com/repository/spring' }
         maven { url 'https://maven.aliyun.com/repository/google' }
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-        mavenCentral()
     }
 
     configurations {
